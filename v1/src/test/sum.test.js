@@ -1,6 +1,6 @@
 import { describe, expect, it } from '@jest/globals';
 
-import { sum } from '../src/sum.js';
+import { sum } from '../lib/sum.js';
 
 describe('sum', () => {
     it('calculates the sum of a and b', () => {

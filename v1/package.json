@@ -5,8 +5,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "NODE_OPTIONS='--experimental-vm-modules' jest ./*.test.js",
+    "build": "node ./src/builder.js && cpy public dist",
     "test": "NODE_OPTIONS='--experimental-vm-modules' jest ./*.test.js",
+    "dev": "browser-sync start --serveStatic ./dist --server --files ./public/styles.css ./dist/*.html",
     "coverage": "NODE_OPTIONS='--experimental-vm-modules' jest --coverage --collectCoverageFrom=\"./src/**/*.js\""
   },
   "keywords": [],
@@ -15,6 +16,7 @@
   "devDependencies": {
     "@jest/globals": "^29.4.1",
     "browser-sync": "^2.27.5",
+    "cpy-cli": "^4.2.0",
     "eslint": "^8.33.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.6.0",

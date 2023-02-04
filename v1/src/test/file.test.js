@@ -1,4 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
+import { readFile } from '../../../vef2-2022-v1-synilausn/src/lib/file';
 import { direxists, readAFile, readFilesFromDir } from '../lib/file';
 
 describe('file', () => {
@@ -31,7 +32,9 @@ describe('file', () => {
             const result = await readFilesFromDir('./src/thisisadir');
 
             expect(result).toEqual([
-                'src/thisisadir/thisisafile.csv'
+                'src/thisisadir/parsethis.csv',
+                'src/thisisadir/thisisafile.csv',
+                'src/thisisadir/thisisajson.json',
             ]);
         });
     });
@@ -49,4 +52,15 @@ describe('file', () => {
             expect(result).toEqual('content');
         });
     });
+
+    describe('readJSON', () => {
+        it('should return error if parsing was unsuccessful', async () => {;
+            const response = await readFile('./src/thisisadir/thisisajson.json');
+            const data = JSON.parse(response);
+
+            const obj = {"test": "test"};
+
+            expect(data).toEqual(obj);
+        })
+    })
 });

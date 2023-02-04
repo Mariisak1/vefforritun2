@@ -1,7 +1,7 @@
 import path, { join } from 'path';
 import { parseCSV } from './parse.js';
 
-function template(title, content) {
+export function template(title, content) {
     return `<!doctype html>
   <html lang="is">
     <head>
@@ -13,7 +13,7 @@ function template(title, content) {
   </html>`;
   }
 
-function indexCover(results){
+export function indexCover(results){
     const list = results.map((result) => `
 <li>
   <a href="${result.csvPath}">${result.title}</a>
@@ -28,14 +28,47 @@ function indexCover(results){
   </section>`;
 }
 
-function csvPage(result){
+export function csvPage(result){
     /* const list = result.map((res) => `
 
     `)*/
-    console.log(result[0].number);
-    return `<article>
-        <h2>Upplýsingar um ${result[0].number}</h2>
-      </article>`;
+
+    let list;
+    for(const element of result){
+        if(element !== undefined && element.hasOwnProperty('number')){
+            list = result.map((res) => {
+            
+            if(res.hasOwnProperty('name') && res.name !== '' && res.semester !== 'Heilsárs' && !isNaN(res.credits)){
+                return `
+                <tr>
+                    <td>${res.number}</td>
+                    <td>${res.name}</td>
+                    <td>${res.credits}</td>
+                    <td>${res.semester}</td>
+                    <td>${res.level}</td>
+                    <td><a href = ${res.path}>Slóð</a></td>
+                    </tr>`
+            }
+        })
+          .join('\n');
+        }
+
+    }
+    
+        return `<section>
+        <h1>Námskeið</h1>
+        <table>
+            <tr>
+                <th>Námskeið</th>
+                <th>Nafn</th>
+                <th>Einingar</th>
+                <th>Kennslumisseri</th>
+                <th>Námsstig</th>
+                <th>Slóð á kennsluskrá</th>
+            </tr>
+            ${list}
+          </table>
+      </section>`;
 }
 
 

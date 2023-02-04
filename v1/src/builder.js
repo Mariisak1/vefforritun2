@@ -6,7 +6,7 @@ import { direxists, readAFile, readFilesFromDir, readJSON } from './lib/file.js'
 import { resourceLimits } from 'worker_threads';
 import { parseCSV } from './lib/parse.js';
 
-async function main() {
+export async function main() {
   // Búa til `./dist` ef ekki til
   if (!(await direxists('./dist'))) {
     await mkdir('./dist');
@@ -32,7 +32,6 @@ async function main() {
       
 
         const filepath = join('./dist', csvPath);
-        console.log(await parseCSV(join('./data', deild.csv)));
         const deildtemplate = deildTemplate(title, await parseCSV(join('./data', deild.csv)));
 
         // eslint-disable-next-line no-await-in-loop

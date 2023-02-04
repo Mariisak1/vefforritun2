@@ -23,8 +23,10 @@ export function indexCover(results){
     .join('\n');
 
     return `<section>
-    <h1>HÍ Deildir</h1>
-    <ul>${list}</ul>
+    <div class="iwrapper">
+      <h1>HÍ Deildir</h1>
+      <ul>${list}</ul>
+    </div>
   </section>`;
 }
 
@@ -56,18 +58,20 @@ export function csvPage(result){
     }
     
         return `<section>
-        <h1>Námskeið</h1>
-        <table>
-            <tr>
-                <th>Námskeið</th>
-                <th>Nafn</th>
-                <th>Einingar</th>
-                <th>Kennslumisseri</th>
-                <th>Námsstig</th>
-                <th>Slóð á kennsluskrá</th>
-            </tr>
-            ${list}
-          </table>
+        <div class="csvwrapper">
+          <h1>Námskeið</h1>
+          <table>
+              <tr>
+                  <th>Námskeið</th>
+                  <th>Nafn</th>
+                  <th>Einingar</th>
+                  <th>Kennslumisseri</th>
+                  <th>Námsstig</th>
+                  <th>Slóð á kennsluskrá</th>
+              </tr>
+              ${list}
+            </table>
+        </div>
       </section>`;
 }
 

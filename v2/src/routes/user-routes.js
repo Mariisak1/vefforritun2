@@ -7,6 +7,7 @@ import {
   listEventByName,
   listEvents,
   updateEvent,
+  deleteRegistration,
 } from '../lib/db.js';
 import passport, { ensureLoggedInUser } from '../lib/login.js';
 import { slugify } from '../lib/slugify.js';
@@ -73,6 +74,27 @@ function signup(req, res) {
   return res.render('signup-user', { message, title: 'Nýskráning' });
 }
 
+//eyðir registration
+async function deleteRegistrationRoute(req, res) {
+  console.log(req.body);
+  const the_user = req.user.id;
+  const { slug, id } = req.params;
+
+
+  const registration = await listEvent(slug);
+
+  console.log(the_user);
+  console.log(id);
+
+  if(!registration){
+    return next();
+  }
+
+  await deleteRegistration(id, the_user);
+
+  res.redirect(`/${slug}`);
+}
+
 
 userRouter.get('/logout', (req, res) => {
   req.logout();
@@ -82,6 +104,7 @@ userRouter.get('/logout', (req, res) => {
 userRouter.get('/', ensureLoggedInUser, catchErrors(userRoute));
 userRouter.get('/login', login);
 userRouter.get('/signup', signup);
+userRouter.get('/:slug/delete/:id', deleteRegistrationRoute);
 
 userRouter.post(
   '/login',
@@ -118,5 +141,4 @@ userRouter.post(
     return res.render('user/signup')
   }
 
-}
-);
+});

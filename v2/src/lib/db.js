@@ -98,16 +98,16 @@ export async function updateEvent(id, { name, slug, description } = {}) {
   return null;
 }
 
-export async function register({ name, comment, event } = {}) {
+export async function register({ name, comment, event, the_user } = {}) {
   const q = `
     INSERT INTO registrations
-      (name, comment, event)
+      (name, comment, event, the_user)
     VALUES
-      ($1, $2, $3)
+      ($1, $2, $3, $4)
     RETURNING
-      id, name, comment, event;
+      id, name, comment, event, the_user;
   `;
-  const values = [name, comment, event];
+  const values = [name, comment, event, the_user];
   const result = await query(q, values);
 
   if (result && result.rowCount === 1) {
@@ -115,6 +115,16 @@ export async function register({ name, comment, event } = {}) {
   }
 
   return null;
+}
+
+export async function deleteRegistration(registration, the_user){
+  const q = `
+    DELETE FROM registrations
+    WHERE id = $1 AND the_user = $2
+  `;
+
+  const values = [registration, the_user];
+  await query(q, values);
 }
 
 export async function listEvents() {

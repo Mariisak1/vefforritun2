@@ -49,6 +49,8 @@ function login(req, res) {
   return res.render('loginAdmin', { message, title: 'Innskráning' });
 }
 
+
+//passar að það sé ekki til event að sama nafni nú þegar
 async function validationCheck(req, res, next) {
   const { name, description } = req.body;
 

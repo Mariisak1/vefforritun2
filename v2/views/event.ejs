@@ -18,6 +18,7 @@
             <% if (entry.comment) { %>
               <span class="event__registeredComment"><%= entry.comment %></span>
             <% } %>
+            <p><a href="/user/<%= event.slug %>/delete/<%= entry.id %>" class="events__eventEdit">Afskrá af viðburð</a>
           </li>
         <% }); %>
       </ul>

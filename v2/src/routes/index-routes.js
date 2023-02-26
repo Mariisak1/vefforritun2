@@ -76,16 +76,24 @@ async function validationCheck(req, res, next) {
   return next();
 }
 
+//registers user for an event
 async function registerRoute(req, res) {
   const { name, comment } = req.body;
   const { slug } = req.params;
   const event = await listEvent(slug);
 
+  //passar að notandi sé skráður inn áður en hann skráir sig
+  if(!req.isAuthenticated()) {
+    return res.redirect('/user/login');
+  }
+
   const registered = await register({
     name,
     comment,
     event: event.id,
+    the_user: req.user.id,
   });
+
 
   if (registered) {
     return res.redirect(`/${event.slug}`);

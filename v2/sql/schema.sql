@@ -13,7 +13,8 @@ CREATE TABLE public.registrations (
   comment TEXT,
   event INTEGER NOT NULL,
   created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT event FOREIGN KEY (event) REFERENCES events (id)
+  CONSTRAINT event FOREIGN KEY (event) REFERENCES events (id),
+  the_user INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE
 );
 
 CREATE TABLE public.users (

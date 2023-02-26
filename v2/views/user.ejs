@@ -1,0 +1,23 @@
+<%- include('header') -%>
+
+<h1>Viðburða umsjón (notenda)</h1>
+
+<%- include('events') -%>
+
+    <% if (errors.length > 0) { %>
+      <h3 class="errors__title">Villur við skráningu:</h3>
+      <ul class="errors">
+        <% errors.forEach((error) => { %>
+          <li class="error"><label for="<%= error.param %>"><%= error.msg %></label></li>
+        <% }); %>
+      </ul>
+    <% } %>
+  </form>
+</div>
+
+<div class="user">
+  <p class="user__loggedin">Innskráður sem: <strong><%= username %></strong></p>
+  <p class="user__logout"><a href="/user/logout">Útskrá</a></p>
+</div>
+
+<%- include('footer') -%>

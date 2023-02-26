@@ -76,23 +76,18 @@ function signup(req, res) {
 
 //eyðir registration
 async function deleteRegistrationRoute(req, res) {
-  console.log(req.body);
   const the_user = req.user.id;
   const { slug, id } = req.params;
-
-
   const registration = await listEvent(slug);
 
-  console.log(the_user);
-  console.log(id);
-
-  if(!registration){
-    return next();
+  try {
+    await deleteRegistration(id, the_user);
+    res.redirect(`/${slug}`);
   }
-
-  await deleteRegistration(id, the_user);
-
-  res.redirect(`/${slug}`);
+  catch(error){
+    //TODO breyta
+    console.error("ekki leyft");
+  }
 }
 
 

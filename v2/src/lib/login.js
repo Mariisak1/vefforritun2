@@ -60,6 +60,20 @@ export function ensureLoggedInAdmin(req, res, next) {
   return res.redirect('/admin/login');
 }
 
+
+// Passar að notandi sem er að logga inn sé admin áður en hann er loggaður inn
+export function ensureAdmin(req, res, next) {
+  if(req.isAuthenticated() && req.user.isadmin === true){
+    return next();
+  }
+
+  if(req.isAuthenticated()) {
+    return res.redirect('/user');
+  }
+
+  return res.redirect('/admin/login');
+}
+
 export function ensureLoggedInUser(req, res, next) {
   if (req.isAuthenticated()) {
     return next();

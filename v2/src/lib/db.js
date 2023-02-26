@@ -127,6 +127,29 @@ export async function deleteRegistration(registration, the_user){
   await query(q, values);
 }
 
+//Fjarlægir viðburð
+export async function deleteEvent(eventId){
+  await deleteRegistrationsBeforeEvent(eventId);
+
+  const q = `
+    DELETE FROM events
+    WHERE id = $1;
+  `;
+
+  const values = [eventId];
+  await query(q, values);
+}
+
+async function deleteRegistrationsBeforeEvent(eventId){
+  const q = `
+    DELETE FROM registrations
+    WHERE event = $1;
+  `;
+
+  const values = [eventId];
+  await query(q, values);
+}
+
 export async function listEvents() {
   const q = `
     SELECT
@@ -184,7 +207,7 @@ export async function listEventByName(name) {
 export async function listRegistered(event) {
   const q = `
     SELECT
-      id, name, comment
+      id, name, comment, the_user
     FROM
       registrations
     WHERE event = $1

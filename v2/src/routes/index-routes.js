@@ -36,6 +36,7 @@ async function eventRoute(req, res, next) {
     registered,
     errors: [],
     data: {},
+    user: req.user,
   });
 }
 

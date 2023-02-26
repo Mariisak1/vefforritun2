@@ -7,8 +7,9 @@ import {
   listEventByName,
   listEvents,
   updateEvent,
+  deleteEvent,
 } from '../lib/db.js';
-import passport, { ensureLoggedInAdmin } from '../lib/login.js';
+import passport, { ensureLoggedInAdmin, ensureAdmin } from '../lib/login.js';
 import { slugify } from '../lib/slugify.js';
 import {
   registrationValidationMiddleware,
@@ -162,6 +163,19 @@ async function updateRoute(req, res) {
   return res.render('error');
 }
 
+async function deleteEventRoute(req, res) {
+  const { slug, id } = req.params;
+
+  try {
+    await deleteEvent(id);
+    res.redirect(`/`);
+  }
+  catch(error){
+    //TODO breyta
+    console.error("ekki leyft");
+  }
+}
+
 async function eventRoute(req, res, next) {
   const { slug } = req.params;
   const { user: { username } = {} } = req;
@@ -196,11 +210,14 @@ adminRouter.get('/login', login);
 adminRouter.post(
   '/login',
 
+
   // Þetta notar strat að ofan til að skrá notanda inn
   passport.authenticate('local', {
     failureMessage: 'Notandanafn eða lykilorð vitlaust.',
     failureRedirect: '/admin/login',
   }),
+
+  ensureAdmin,
 
   // Ef við komumst hingað var notandi skráður inn, senda á /admin
   (req, res) => {
@@ -214,8 +231,11 @@ adminRouter.get('/logout', (req, res) => {
   res.redirect('/');
 });
 
+adminRouter.get('/:slug/delete/:id', deleteEventRoute);
+
 // Verður að vera seinast svo það taki ekki yfir önnur route
 adminRouter.get('/:slug', ensureLoggedInAdmin, catchErrors(eventRoute));
+
 adminRouter.post(
   '/:slug',
   ensureLoggedInAdmin,

@@ -143,7 +143,7 @@ async function registerRoute(req, res) {
 }
 
 async function updateRoute(req, res) {
-  const { name, description } = req.body;
+  const { name, description, location, path_url } = req.body;
   const { slug } = req.params;
 
   const event = await listEvent(slug);
@@ -154,6 +154,8 @@ async function updateRoute(req, res) {
     name,
     slug: newSlug,
     description,
+    location,
+    path_url,
   });
 
   if (updated) {

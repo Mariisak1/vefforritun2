@@ -11,12 +11,6 @@ import {
 export const indexRouter = express.Router();
 
 async function indexRoute(req, res) {
-  if(getEventCount() > 10){
-    res.redirect('/1');
-  }
-}
-
-async function indexRouteTwo(req, res) {
   // const events = await listEvents();
   const perPage = 9;
   const page = req.params.page || 1;
@@ -66,7 +60,6 @@ async function eventRegisteredRoute(req, res) {
 async function validationCheck(req, res, next) {
   const { name, comment } = req.body;
 
-  // TODO tvítekning frá því að ofan
   const { slug } = req.params;
   const event = await listEvent(slug);
   const registered = await listRegistered(event.id);
@@ -97,7 +90,6 @@ async function registerRoute(req, res) {
   const { slug } = req.params;
   const event = await listEvent(slug);
 
-  //passar að notandi sé skráður inn áður en hann skráir sig
   if(!req.isAuthenticated()) {
     return res.redirect('/user/login');
   }
@@ -131,4 +123,4 @@ indexRouter.post(
   indexRouter.get('/:slug/thanks', catchErrors(eventRegisteredRoute));
   
 
-  indexRouter.get('/:page?', catchErrors(indexRouteTwo));
+  indexRouter.get('/:page?', catchErrors(indexRoute));

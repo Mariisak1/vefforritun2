@@ -8,6 +8,9 @@ import {
   register,
   updateEvent,
   clearData,
+  getEventCount,
+  getEventsByPage,
+  deleteEvent,
 } from '../lib/db';
 
 dotenv.config({ path: './.env.test' });
@@ -84,7 +87,6 @@ describe('db', () => {
 
   it('allows registering to events', async () => {
     const event = await createEvent({ name: 'e', slug: 'e' });
-    console.log(typeof event.id);
     const registration = await register({ name: 'r', event: event.id, the_user: 0 });
 
     expect(registration.name).toEqual('r');
@@ -101,4 +103,38 @@ describe('db', () => {
 
     expect(registration).toBeNull();
   });
+
+  it('gets the count of events in the event table', async () => {
+    await createEvent({name: 'a', slug: 'a', description: 'desc'});
+    await createEvent({name: 'b', slug: 'b', description: 'desc'});
+
+    const result = await getEventCount();
+    const count = parseInt(result.rows[0].count);
+
+    expect(count).toEqual(2);
+  })
+
+  it('returns empty array if no events exist', async () => {
+    const result = await getEventsByPage(1, 1)
+
+    expect(result).toEqual([]);
+  })
+
+  it('deletes an event according to the passed event id', async () => {
+    await createEvent({name: 'a', slug: 'a', description: 'desc'});
+    await deleteEvent(1);
+
+    const events = await getEventsByPage(1, 1);
+
+    expect(events).toEqual([]);
+  })
+
+  it('clears all data', async () => {
+    await createEvent({name: 'a', slug: 'a', description: 'desc'});
+    await clearData();
+
+    const events = await getEventsByPage(1, 1);
+
+    expect(events).toEqual([]);
+  })
 });

@@ -182,8 +182,7 @@ async function deleteEventRoute(req, res) {
     res.redirect(`/`);
   }
   catch(error){
-    //TODO breyta
-    console.error("ekki leyft");
+    console.error(error);
   }
 }
 
@@ -248,7 +247,6 @@ adminRouter.get('/logout', (req, res) => {
 
 adminRouter.get('/:slug/delete/:id', deleteEventRoute);
 
-// Verður að vera seinast svo það taki ekki yfir önnur route
 adminRouter.get('/:slug', ensureLoggedInAdmin, catchErrors(eventRoute));
 
 adminRouter.post(

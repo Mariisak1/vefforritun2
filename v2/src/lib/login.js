@@ -50,8 +50,7 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-// Hjálpar middleware sem athugar hvort notandi sé innskráður og hleypir okkur
-// þá áfram, annars sendir á /login
+
 export function ensureLoggedInAdmin(req, res, next) {
   if (req.isAuthenticated()) {
     return next();

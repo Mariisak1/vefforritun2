@@ -63,19 +63,12 @@ function login(req, res) {
 
 function signup(req, res) {
 
-  console.log(req);
-
-  //TODO IF USER DOES NOT EXIST THEN CALL "createUser"
   if (req.isAuthenticated()) {
     return res.redirect('/user');
   }
 
-
-
   let message = '';
 
-  // Athugum hvort einhver skilaboð séu til í session, ef svo er birtum þau
-  // og hreinsum skilaboð
   if (req.session.messages && req.session.messages.length > 0) {
     message = req.session.messages.join(', ');
     req.session.messages = [];

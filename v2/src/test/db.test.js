@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, describe, expect, it } from '@jest/globals';
+import { afterAll, beforeAll, afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 import dotenv from 'dotenv';
 import {
   createEvent,
@@ -7,6 +7,7 @@ import {
   end,
   register,
   updateEvent,
+  clearData,
 } from '../lib/db';
 
 dotenv.config({ path: './.env.test' });
@@ -21,13 +22,26 @@ describe('db', () => {
     await end();
   });
 
+  beforeEach(async () => {
+    await createSchema();
+  })
+
+  afterEach(async () => {
+    await clearData();
+  })
+
   it('creates a valid event and returns it', async () => {
     const name = 'test';
+    const description = 'desc';
 
     const result = await createEvent({
       name,
       slug: name,
+      description,
+      location: 'loc',
+      path_url: 'url'
     });
+
     expect(result.name).toBe(name);
     expect(result.slug).toBe(name);
     expect(result.id).toBeGreaterThan(0);
@@ -70,7 +84,8 @@ describe('db', () => {
 
   it('allows registering to events', async () => {
     const event = await createEvent({ name: 'e', slug: 'e' });
-    const registration = await register({ name: 'r', event: event.id });
+    console.log(typeof event.id);
+    const registration = await register({ name: 'r', event: event.id, the_user: 0 });
 
     expect(registration.name).toEqual('r');
   });

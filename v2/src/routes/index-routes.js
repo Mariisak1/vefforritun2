@@ -17,7 +17,7 @@ async function indexRoute(req, res) {
 }
 
 async function indexRouteTwo(req, res) {
-  //const events = await listEvents();
+  // const events = await listEvents();
   const perPage = 9;
   const page = req.params.page || 1;
   const offset = (page - 1) * perPage;
@@ -117,9 +117,9 @@ async function registerRoute(req, res) {
   return res.render('error');
 }
 
-indexRouter.get('/:page?', catchErrors(indexRouteTwo));
 
 indexRouter.get('/:slug', catchErrors(eventRoute));
+
 indexRouter.post(
   '/:slug',
   registrationValidationMiddleware('comment'),
@@ -127,5 +127,8 @@ indexRouter.post(
   catchErrors(validationCheck),
   sanitizationMiddleware('comment'),
   catchErrors(registerRoute)
-);
-indexRouter.get('/:slug/thanks', catchErrors(eventRegisteredRoute));
+  );
+  indexRouter.get('/:slug/thanks', catchErrors(eventRegisteredRoute));
+  
+
+  indexRouter.get('/:page?', catchErrors(indexRouteTwo));

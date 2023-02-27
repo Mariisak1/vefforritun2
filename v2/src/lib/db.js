@@ -242,20 +242,30 @@ export async function getEventCount() {
 export async function getEventsByPage(offset, limit) {
   const q = `
     SELECT
-      *
+      id, name, slug, description, created, updated, location, path_url
     FROM
       events
     OFFSET $1 LIMIT $2
   `;
 
-  
   const result = await query(q, [offset, limit]);
 
   if (result) {
     return result.rows;
   }
+
+  return [];
+
 }
 
 export async function end() {
   await pool.end();
+}
+
+export async function clearData() {
+  const q = `
+    TRUNCATE users, registrations, events
+  `;
+
+  await query(q);
 }

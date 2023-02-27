@@ -19,9 +19,9 @@
     <ul class="pagination__ul">
       <% if (current > 1) { %>
         <li><a href ="/<%= (current - 1) %>">Fyrri </a></li>
-      <% } %>
-      <% for (let i = 1; i <= pages; i++) { %>
-        <li><a href="/<%= i %>"><%= i %> </a></li>
+        <% for (let i = 1; i <= pages; i++) { %>
+          <li><a href="/<%= i %>"><%= i %> </a></li>
+        <% } %>
       <% } %>
       <% if (current < pages) { %>
         <li><a href ="/<%= Number(current) + 1 %>">Næsta</a></li>

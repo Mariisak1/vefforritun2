@@ -50,7 +50,6 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-
 export function ensureLoggedInAdmin(req, res, next) {
   if (req.isAuthenticated()) {
     return next();

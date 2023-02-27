@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { readFile } from 'fs/promises';
 import pg from 'pg';
 
@@ -129,23 +130,23 @@ export async function deleteRegistration(registration, the_user){
   await query(q, values);
 }
 
-//Fjarlægir viðburð
-export async function deleteEvent(eventId){
-  await deleteRegistrationsBeforeEvent(eventId);
-
+async function deleteRegistrationsBeforeEvent(eventId){
   const q = `
-    DELETE FROM events
-    WHERE id = $1;
+    DELETE FROM registrations
+    WHERE event = $1;
   `;
 
   const values = [eventId];
   await query(q, values);
 }
 
-async function deleteRegistrationsBeforeEvent(eventId){
+// Fjarlægir viðburð
+export async function deleteEvent(eventId){
+  await deleteRegistrationsBeforeEvent(eventId);
+
   const q = `
-    DELETE FROM registrations
-    WHERE event = $1;
+    DELETE FROM events
+    WHERE id = $1;
   `;
 
   const values = [eventId];
@@ -237,6 +238,8 @@ export async function getEventCount() {
   if (result) {
     return result;
   }
+
+  return 0;
 }
 
 export async function getEventsByPage(offset, limit) {

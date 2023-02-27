@@ -1,23 +1,12 @@
+/* eslint-disable camelcase */  
 import express from 'express';
-import { validationResult } from 'express-validator';
 import { catchErrors } from '../lib/catch-errors.js';
 import {
-  createEvent,
-  listEvent,
-  listEventByName,
-  listEvents,
-  updateEvent,
   deleteRegistration,
   getEventCount,
   getEventsByPage
 } from '../lib/db.js';
 import passport, { ensureLoggedInUser } from '../lib/login.js';
-import { slugify } from '../lib/slugify.js';
-import {
-  registrationValidationMiddleware,
-  sanitizationMiddleware,
-  xssSanitizationMiddleware,
-} from '../lib/validation.js';
 
 import { createUser } from '../lib/users.js';
 
@@ -51,8 +40,6 @@ function login(req, res) {
   
     let message = '';
   
-    // Athugum hvort einhver skilaboð séu til í session, ef svo er birtum þau
-    // og hreinsum skilaboð
     if (req.session.messages && req.session.messages.length > 0) {
       message = req.session.messages.join(', ');
       req.session.messages = [];
@@ -77,30 +64,24 @@ function signup(req, res) {
   return res.render('signup-user', { message, title: 'Nýskráning' });
 }
 
-//eyðir registration
+// eyðir registration
 async function deleteRegistrationRoute(req, res) {
   const the_user = req.user.id;
   const { slug, id } = req.params;
-  const registration = await listEvent(slug);
 
   try {
     await deleteRegistration(id, the_user);
     res.redirect(`/${slug}`);
   }
   catch(error){
-    //TODO
-    console.error("ekki leyft");
+    console.error(error);
   }
 }
 
 
 userRouter.get('/logout', (req, res) => {
-  req.logout(function(err) {
-    if(err) {
-      return next(err);
-    }
-    res.redirect('/');
-  });
+  req.logout(() => {});
+  res.redirect('/');
 });
 
 userRouter.get('/', ensureLoggedInUser, catchErrors(userRoute));
@@ -133,14 +114,14 @@ userRouter.post(
   try {
     await createUser(username, password);
 
-    //Skráir notanda sjálfkrafa inn eftir sign-up
-    passport.authenticate('local')(req, res, () => {
-      res.redirect('/user');
-    });
+    passport.authenticate('local')(req, res, () => 
+      res.redirect('/user')
+    );
   } 
   
   catch(error) {
     return res.render('user/signup')
   }
 
+  return null;
 });

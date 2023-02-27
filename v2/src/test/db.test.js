@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */  
 import { afterAll, beforeAll, afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 import dotenv from 'dotenv';
 import {
@@ -109,7 +110,7 @@ describe('db', () => {
     await createEvent({name: 'b', slug: 'b', description: 'desc'});
 
     const result = await getEventCount();
-    const count = parseInt(result.rows[0].count);
+    const count = Number(result.rows[0].count);
 
     expect(count).toEqual(2);
   })

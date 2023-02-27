@@ -1,7 +1,8 @@
 import express from 'express';
 import { validationResult } from 'express-validator';
 import { catchErrors } from '../lib/catch-errors.js';
-import { listEvent, listEvents, listRegistered, register, getEventCount, getEventsByPage } from '../lib/db.js';
+import { listEvent, listEvents, listRegistered, register, 
+  getEventCount, getEventsByPage } from '../lib/db.js';
 import {
   registrationValidationMiddleware,
   sanitizationMiddleware,
@@ -11,7 +12,6 @@ import {
 export const indexRouter = express.Router();
 
 async function indexRoute(req, res) {
-  // const events = await listEvents();
   const perPage = 9;
   const page = req.params.page || 1;
   const offset = (page - 1) * perPage;
@@ -84,7 +84,6 @@ async function validationCheck(req, res, next) {
   return next();
 }
 
-//registers user for an event
 async function registerRoute(req, res) {
   const { name, comment } = req.body;
   const { slug } = req.params;

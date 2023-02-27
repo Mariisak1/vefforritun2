@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */  
 import express from 'express';
 import { validationResult } from 'express-validator';
 import { catchErrors } from '../lib/catch-errors.js';
@@ -49,8 +50,6 @@ function login(req, res) {
 
   let message = '';
 
-  // Athugum hvort einhver skilaboð séu til í session, ef svo er birtum þau
-  // og hreinsum skilaboð
   if (req.session.messages && req.session.messages.length > 0) {
     message = req.session.messages.join(', ');
     req.session.messages = [];
@@ -60,7 +59,7 @@ function login(req, res) {
 }
 
 
-//passar að það sé ekki til event að sama nafni nú þegar
+// passar að það sé ekki til event að sama nafni nú þegar
 async function validationCheck(req, res, next) {
   const { name, description } = req.body;
 
@@ -175,11 +174,11 @@ async function updateRoute(req, res) {
 }
 
 async function deleteEventRoute(req, res) {
-  const { slug, id } = req.params;
+  const { id } = req.params;
 
   try {
     await deleteEvent(id);
-    res.redirect(`/`);
+    res.redirect('/');
   }
   catch(error){
     console.error(error);
@@ -236,13 +235,8 @@ adminRouter.post(
 );
 
 adminRouter.get('/logout', (req, res) => {
-  // logout hendir session cookie og session
-  req.logout(function(err) {
-    if(err) {
-      return next(err);
-    }
-    res.redirect('/');
-  });
+  req.logout(() => {});
+  return res.redirect('/');
 });
 
 adminRouter.get('/:slug/delete/:id', deleteEventRoute);

@@ -182,3 +182,17 @@ section {
 .user__loggedin {
   margin-bottom: 0.5rem;
 }
+
+.pagination {
+  display: flex;
+}
+
+.pagination__ul {
+  display: flex;
+  list-style: none;
+}
+
+.pagination__ul li {
+  flex-direction: row;
+  margin: 0.5rem;
+}

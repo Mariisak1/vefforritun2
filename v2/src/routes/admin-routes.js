@@ -8,6 +8,8 @@ import {
   listEvents,
   updateEvent,
   deleteEvent,
+  getEventCount,
+  getEventsByPage,
 } from '../lib/db.js';
 import passport, { ensureLoggedInAdmin, ensureAdmin } from '../lib/login.js';
 import { slugify } from '../lib/slugify.js';
@@ -20,7 +22,12 @@ import {
 export const adminRouter = express.Router();
 
 async function index(req, res) {
-  const events = await listEvents();
+  const perPage = 9;
+  const page = req.params.page || 1;
+  const offset = (page - 1) * perPage;
+  const events = await getEventsByPage(offset, perPage);
+  const eventCount = await getEventCount();
+  const pageCount = Math.ceil(eventCount.rows[0].count / perPage);
   const { user: { username } = {} } = req || {};
 
   return res.render('admin', {
@@ -30,6 +37,8 @@ async function index(req, res) {
     data: {},
     title: 'Viðburðir — umsjón',
     admin: true,
+    current: page,
+    pages: pageCount,
   });
 }
 
@@ -229,8 +238,12 @@ adminRouter.post(
 
 adminRouter.get('/logout', (req, res) => {
   // logout hendir session cookie og session
-  req.logout();
-  res.redirect('/');
+  req.logout(function(err) {
+    if(err) {
+      return next(err);
+    }
+    res.redirect('/');
+  });
 });
 
 adminRouter.get('/:slug/delete/:id', deleteEventRoute);

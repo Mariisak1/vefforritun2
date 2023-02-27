@@ -224,6 +224,38 @@ export async function listRegistered(event) {
   return null;
 }
 
+export async function getEventCount() {
+  const q = `
+    SELECT
+      COUNT(*)
+    FROM
+      events
+  `;
+
+  const result = await query(q);
+
+  if (result) {
+    return result;
+  }
+}
+
+export async function getEventsByPage(offset, limit) {
+  const q = `
+    SELECT
+      *
+    FROM
+      events
+    OFFSET $1 LIMIT $2
+  `;
+
+  
+  const result = await query(q, [offset, limit]);
+
+  if (result) {
+    return result.rows;
+  }
+}
+
 export async function end() {
   await pool.end();
 }

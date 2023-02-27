@@ -8,6 +8,8 @@ import {
   listEvents,
   updateEvent,
   deleteRegistration,
+  getEventCount,
+  getEventsByPage
 } from '../lib/db.js';
 import passport, { ensureLoggedInUser } from '../lib/login.js';
 import { slugify } from '../lib/slugify.js';
@@ -22,7 +24,13 @@ import { createUser } from '../lib/users.js';
 export const userRouter = express.Router();
 
 async function userRoute(req, res) {
-  const events = await listEvents();
+  const perPage = 9;
+  const page = req.params.page || 1;
+  const offset = (page - 1) * perPage;
+  const events = await getEventsByPage(offset, perPage);
+  const eventCount = await getEventCount();
+  const pageCount = Math.ceil(eventCount.rows[0].count / perPage);
+
   const { user: { username } = {} } = req || {};
 
   return res.render('user', {
@@ -31,6 +39,8 @@ async function userRoute(req, res) {
     title: 'Viðburðir — notandi',
     admin: false,
     events,
+    current: page,
+    pages: pageCount,
   });
 }
 
@@ -85,15 +95,19 @@ async function deleteRegistrationRoute(req, res) {
     res.redirect(`/${slug}`);
   }
   catch(error){
-    //TODO breyta
+    //TODO
     console.error("ekki leyft");
   }
 }
 
 
 userRouter.get('/logout', (req, res) => {
-  req.logout();
-  res.redirect('/');
+  req.logout(function(err) {
+    if(err) {
+      return next(err);
+    }
+    res.redirect('/');
+  });
 });
 
 userRouter.get('/', ensureLoggedInUser, catchErrors(userRoute));

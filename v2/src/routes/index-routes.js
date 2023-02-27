@@ -1,7 +1,7 @@
 import express from 'express';
 import { validationResult } from 'express-validator';
 import { catchErrors } from '../lib/catch-errors.js';
-import { listEvent, listEvents, listRegistered, register } from '../lib/db.js';
+import { listEvent, listEvents, listRegistered, register, getEventCount, getEventsByPage } from '../lib/db.js';
 import {
   registrationValidationMiddleware,
   sanitizationMiddleware,
@@ -11,12 +11,26 @@ import {
 export const indexRouter = express.Router();
 
 async function indexRoute(req, res) {
-  const events = await listEvents();
+  if(getEventCount() > 10){
+    res.redirect('/1');
+  }
+}
+
+async function indexRouteTwo(req, res) {
+  //const events = await listEvents();
+  const perPage = 9;
+  const page = req.params.page || 1;
+  const offset = (page - 1) * perPage;
+  const events = await getEventsByPage(offset, perPage);
+  const eventCount = await getEventCount();
+  const pageCount = Math.ceil(eventCount.rows[0].count / perPage);
 
   res.render('index', {
     title: 'Viðburðasíðan',
     admin: false,
     events,
+    current: page,
+    pages: pageCount,
   });
 }
 
@@ -103,7 +117,8 @@ async function registerRoute(req, res) {
   return res.render('error');
 }
 
-indexRouter.get('/', catchErrors(indexRoute));
+indexRouter.get('/:page?', catchErrors(indexRouteTwo));
+
 indexRouter.get('/:slug', catchErrors(eventRoute));
 indexRouter.post(
   '/:slug',

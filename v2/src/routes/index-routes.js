@@ -1,3 +1,4 @@
+import passport from 'passport';
 import express from 'express';
 import { validationResult } from 'express-validator';
 import { catchErrors } from '../lib/catch-errors.js';
@@ -8,16 +9,22 @@ import {
   sanitizationMiddleware,
   xssSanitizationMiddleware,
 } from '../lib/validation.js';
+import { ensureLoggedInAdmin, ensureAdmin } from '../lib/login.js';
 
 export const indexRouter = express.Router();
 
 async function indexRoute(req, res) {
+
   const perPage = 9;
   const page = req.params.page || 1;
   const offset = (page - 1) * perPage;
   const events = await getEventsByPage(offset, perPage);
   const eventCount = await getEventCount();
   const pageCount = Math.ceil(eventCount.rows[0].count / perPage);
+  const authentication = req.isAuthenticated() && req.user.isadmin;
+  const { user: { username } = {} } = req || {};
+
+  console.log(authentication);
 
   res.render('index', {
     title: 'Viðburðasíðan',
@@ -25,6 +32,8 @@ async function indexRoute(req, res) {
     events,
     current: page,
     pages: pageCount,
+    authentication,
+    username,
   });
 }
 
@@ -122,4 +131,5 @@ indexRouter.post(
   indexRouter.get('/:slug/thanks', catchErrors(eventRegisteredRoute));
   
 
-  indexRouter.get('/:page?', catchErrors(indexRoute));
+  indexRouter.get('/', catchErrors(indexRoute));
+  indexRouter.get('/:page', ensureLoggedInAdmin, catchErrors(indexRoute));

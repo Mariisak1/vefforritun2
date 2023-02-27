@@ -30,6 +30,7 @@ async function index(req, res) {
   const eventCount = await getEventCount();
   const pageCount = Math.ceil(eventCount.rows[0].count / perPage);
   const { user: { username } = {} } = req || {};
+  const authentication = req.isAuthenticated() && req.user.isadmin;
 
   return res.render('admin', {
     username,
@@ -40,6 +41,7 @@ async function index(req, res) {
     admin: true,
     current: page,
     pages: pageCount,
+    authentication,
   });
 }
 
@@ -243,6 +245,8 @@ adminRouter.get('/:slug/delete/:id', deleteEventRoute);
 
 adminRouter.get('/:slug', ensureLoggedInAdmin, catchErrors(eventRoute));
 
+
+
 adminRouter.post(
   '/:slug',
   ensureLoggedInAdmin,
@@ -252,3 +256,5 @@ adminRouter.post(
   sanitizationMiddleware('description'),
   catchErrors(updateRoute)
 );
+
+

@@ -4,6 +4,40 @@
 
 <%- include('events') -%>
 
+<% if(authentication === true) { %>
+  <div class="event__registration">
+    <h2 class="event__subtitle">Nýr viðburður</h2>
+    <form method="post" action="/admin/" enctype="application/x-www-form-urlencoded" class="">
+      <div class="field field--input1">
+        <label for="name">Nafn*:</label>
+        <input type="text" name="name" id="name">
+      </div>
+
+      <div class="field field--textarea1">
+        <label for="description">Lýsing:</label>
+        <textarea name="description" id="description"></textarea>
+      </div>
+
+      <div class="field field--input1">
+        <label for="location">Staðsetning:</label>
+        <input type="location" name="location" id="location">
+      </div>
+
+      <div class="field field--input1">
+        <label for="path_url1">Slóð:</label>
+        <input type="path_url1" name="path_url" id="path_url">
+      </div>
+
+      <button class="button">Skrá viðburð</button>
+    </form>
+  </div>
+
+  <div class="user">
+    <p class="user__loggedin">Innskráður sem: <strong><%= username %></strong></p>
+    <p class="user__logout"><a href="/admin/logout">Útskrá</a></p>
+  </div>
+<% } %>
+
 <div class="link">
   <a class="link__link" href="/admin">Innskráning</a>
   <br><br>

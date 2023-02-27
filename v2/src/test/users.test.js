@@ -35,8 +35,6 @@ describe('users', () => {
 
   it('creates a user', async () => {
     const user = await createUser('no', 'no');
-
     expect(user.username).toEqual('no');
 });
-})
-
+});

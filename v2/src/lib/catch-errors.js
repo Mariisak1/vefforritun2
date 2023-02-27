@@ -5,6 +5,5 @@
  * @returns {function} Middleware með villumeðhöndlun
  */
 export function catchErrors(fn) {
-  console.log("ERROR CAUGHT")
   return (req, res, next) => fn(req, res, next).catch(next);
 }

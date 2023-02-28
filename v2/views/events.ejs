@@ -7,7 +7,7 @@
         <p class="events__event__description"><%= event.description %></p>
         <br>
         <p class="events__event__location">Staðsetning: <%= event.location %></p>
-        <% if (authentication) { %>
+        <% if (typeof authentication !== 'undefined' && authentication) { %>
           <p><a href="/admin/<%= event.slug %>" class="events__eventEdit">Uppfæra viðburð</a>
           <p><a href="/admin/<%= event.slug %>/delete/<%= event.id %>" class="events__eventDelete">Fjarlægja viðburð</a>
         <% } %>

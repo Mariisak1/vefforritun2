@@ -16,8 +16,6 @@ export async function showAllDepartments(req: Request, res: Response, next: Next
 
 export async function createDepartment(req: Request, res: Response, next: NextFunction) {
 
-    console.log(req.body);
-
     if (!req.body) {
         return next(new Error('missing request body'));
     }

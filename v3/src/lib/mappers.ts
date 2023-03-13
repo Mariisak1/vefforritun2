@@ -34,6 +34,7 @@ export function departmentMapper(input: unknown | null): Department | null {
 
     return null;
 }
+
   
 export function departmentsMapper(input: QueryResult<any> | null): Array<Department> {
 
@@ -48,7 +49,7 @@ export function departmentsMapper(input: QueryResult<any> | null): Array<Departm
     return result.filter((i): i is Department => Boolean(i));
 }
 
-export function courseMapper(input: QueryResult<any> | null): Course | null {
+export function courseMapper(input: unknown | null): Course | null {
     const course: Course = {
         id: 0,
         course_id: '',
@@ -62,8 +63,8 @@ export function courseMapper(input: QueryResult<any> | null): Course | null {
         updated: new Date, 
     }
 
-    if(input && input.rows) {
-        const data = input.rows[0];
+    if(input) {
+        const data = input as Course;
         
         course.id = data.id;
         course.course_id = data.course_id;
@@ -80,4 +81,17 @@ export function courseMapper(input: QueryResult<any> | null): Course | null {
     }
 
     return null;
+}
+
+export function coursesMapper(input: QueryResult<any> | null): Array<Course> {
+
+    if(!input){
+        return [];
+    }
+    
+    const result = input?.rows.map(courseMapper);
+
+    console.log(result)
+    
+    return result.filter((i): i is Course => Boolean(i));
 }

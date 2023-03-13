@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { sayHello } from '../lib/hello.js';
+import { showAllCoursesWithinDept, createCourseWithinDept, deleteCourseWithinDept, getCourse } from './courses.js';
 import { createDepartment, showAllDepartments, getDepartment, deleteDepartment } from './departments.js';
 
 export const router = express.Router();
@@ -41,6 +42,15 @@ router.get('/departments', showAllDepartments);
 router.post('/departments', createDepartment);
 router.get('/departments/:slug', getDepartment);
 router.delete('/departments/:slug', deleteDepartment);
+
+//courses
+router.get('/departments/:slug/courses', showAllCoursesWithinDept);
+router.post('/departments/:slug/courses', createCourseWithinDept);
+//slug breytir engu, laga
+router.get('/departments/:slug/courses/:course_id', getCourse);
+router.delete('/departments/:slug/courses/:course_id', deleteCourseWithinDept);
+
+
 
 
 router.get('/test', hello);

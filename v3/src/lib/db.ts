@@ -1,9 +1,10 @@
 import { readFile } from 'fs/promises';
 import pg from 'pg';
 import { DepartmentImport, Department, Course, CourseImport } from '../types.js';
-import { departmentMapper, departmentsMapper, courseMapper } from './mappers.js';
+import { departmentMapper, departmentsMapper, courseMapper, coursesMapper } from './mappers.js';
 import { ParamsDictionary } from 'express-serve-static-core';
 import dotenv from "dotenv";
+import { getDepartment } from '../routes/departments.js';
 
 dotenv.config();
 
@@ -69,7 +70,11 @@ export async function insertCourse(course: Omit<CourseImport, 'id'>, departmentI
     [title, course_id, classes, departmentId, semester, level, url],
   );
 
-  const mapped = courseMapper(result);
+  if(!result) {
+    return null;
+  }
+
+  const mapped = courseMapper(result.rows[0]);
 
   return mapped;
 }
@@ -90,6 +95,34 @@ export async function getAllDepartments(): Promise<Array<Department> | null> {
   const departments = departmentsMapper(result);
 
   return departments;
+}
+
+export async function getAllCoursesWithinDept(depSlug: string): Promise<Array<Course> | null> {
+  
+  const department = await getDepartmentBySlug(depSlug);
+
+  if(!department) {
+    return null;
+  }
+
+  const { id } = department;
+  
+  const result = await query(
+    'SELECT * FROM course WHERE department_id = $1',
+    [id],
+  );
+
+  if(!result) {
+    return null;
+  }
+
+  if(!result.rows) {
+    return null;
+  }
+
+  const courses = coursesMapper(result);
+
+  return courses;
 }
 
 export async function getDepartmentBySlug(slug: string): Promise<Department | null> {
@@ -121,6 +154,42 @@ export async function deleteDepartmentBySlug(slug: string): Promise<boolean | nu
   const result = await query(
     'DELETE FROM department WHERE slug = $1',
     [slug]
+  );
+
+  if(!result) {
+    return false;
+  }
+
+  return true;
+}
+
+export async function getCourseBySlug(slug: string): Promise<Course | null> {
+
+  const result = await query(
+    'SELECT * FROM course WHERE course_id = $1',
+    [slug]
+  );
+
+  if(!result) {
+    return null;
+  }
+
+  const course = courseMapper(result.rows[0]);
+
+  return course;
+}
+
+export async function deleteCourseBySlug(course_id: string): Promise<boolean | null> {
+
+  const course = await getCourseBySlug(course_id);
+
+  if(!course) {
+    return null;
+  }
+
+  const result = await query(
+    'DELETE FROM course WHERE course_id = $1',
+    [course_id]
   );
 
   if(!result) {

@@ -25,7 +25,7 @@ export async function index(req: Request, res: Response, next: NextFunction) {
       methods: ['GET', 'POST'],
     },
     {
-      href: '/departments/:slug/courses/:slug',
+      href: '/departments/:slug/courses/:course_id',
       methods: ['GET', 'DELETE', 'PATCH'],
     },
   ]);

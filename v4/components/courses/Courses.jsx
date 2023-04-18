@@ -113,4 +113,5 @@ export function Courses({ slug }) {
   );
 }
 
+
 export default Courses;
